@@ -6,3 +6,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::view('/teste','tela-teste');
+Route::view('/cadastro','tela-cadastro');
