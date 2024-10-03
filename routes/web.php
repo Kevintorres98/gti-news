@@ -2,12 +2,15 @@
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');
+})->name('home');
 Route::view('/teste','tela-teste');
-Route::view('/cadastro','tela-cadastro');
+Route::view('/cadastro','tela-cadastro')->name('telaCadastro');
+Route::view('/login','login')->name('login');
 
 Route::post('/salva-usuario',
 function(Request $request){
@@ -17,8 +20,41 @@ $user->email = $request->email;
 $user->password =$request->password;
 $user->save();
 
-return "salvo com sucesso";
+return redirect()->route('home');
 
 }
 
 )->name('SalvaUsuario');
+
+
+Route::post('/logar',
+function(Request $request){
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        return redirect()->intended('/');
+    }
+
+    return back()->withErrors([
+        'email' => 'Oops email ou senhas estão inválidos.',
+    ])->onlyInput('email');
+
+
+}
+
+)->name('logar');
+
+Route::get('/logout',
+function(Request $request){
+Auth::logout();
+$request->session()->regenerate();
+return redirect()->route('home');
+}
+
+
+)->name('logout');
