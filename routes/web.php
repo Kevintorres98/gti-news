@@ -101,3 +101,63 @@ Route::post(
        
     }
 )->name('SalvaNoticia');
+
+Route::get(
+    '/exibe-noticia/{noticia}',
+    function (Noticia $noticia) {
+       
+        
+      // $noticia = Noticia::find($noticia);
+        return view('exibe-noticia', compact('noticia'));
+
+    }
+)->name('exibenoticia');
+
+Route::get(
+    '/edita-noticia/{noticia}',
+    function (Noticia $noticia) {
+       
+        
+      // $noticia = Noticia::find($noticia);
+        return view('edita-noticia', compact('noticia'));
+        
+    }
+)->name('editanoticia');
+
+Route::post(
+    '/altera-noticia/{noticia}',
+    function (Request $request, Noticia $noticia) {
+    //  dd($request);
+
+    
+    $noticia->titulo = $request->titulo;
+    $noticia->resumo = $request->resumo;
+    $noticia->capa   = $request->capa;
+    $noticia->conteudo = $request->conteudo;
+
+    $noticia->data = now();
+    $noticia->user_id = Auth::id();
+    $noticia->save();
+
+    // $user = new User();
+    // $user->name = $request->nome;
+    //$user->email = $request->email;
+    //$user->password = $request->senha;
+    // $user->save();
+
+
+        return redirect()->route('gerenciaNoticias');
+       
+    }
+)->name('alteranoticia');
+
+Route::get(
+    '/deleta-noticia/{noticia}',
+    function (Noticia $noticia) {
+       
+        
+     $noticia->delete();
+        return redirect()->route('gerencianoticia');
+        
+    }
+)->name('deletanoticia');
