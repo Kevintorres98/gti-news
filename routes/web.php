@@ -8,7 +8,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('home');
+    
+    $noticias = Noticia::orderBy('id','desc')->get();
+                
+
+    return view('home',compact('noticias'));
 })->name('home');
 
 Route::view('/teste', 'tela-teste');
@@ -64,7 +68,7 @@ Route::get('/gerencia-noticias',
                $noticias = Noticia::orderBy('id','desc')->get();
                 return view('gerencia-noticias', compact('noticias'));
             }
-        )->name('gerenciaNoticias');
+        )->name('gerenciaNoticias')->middleware('auth');
 
 
 Route::get(
@@ -73,7 +77,7 @@ Route::get(
            $noticia = new Noticia();
             return view('cadastra-noticia', compact('noticia'));
         }
-)->name('cadastraNoticia');
+)->name('cadastraNoticia')->middleware('auth');
 
 Route::post(
     '/salva-noticia',
@@ -100,7 +104,7 @@ Route::post(
         return redirect()->route('gerenciaNoticias');
        
     }
-)->name('SalvaNoticia');
+)->name('SalvaNoticia')->middleware('auth');
 
 Route::get(
     '/exibe-noticia/{noticia}',
@@ -122,7 +126,7 @@ Route::get(
         return view('edita-noticia', compact('noticia'));
         
     }
-)->name('editanoticia');
+)->name('editanoticia')->middleware('auth');
 
 Route::post(
     '/altera-noticia/{noticia}',
@@ -149,7 +153,7 @@ Route::post(
         return redirect()->route('gerenciaNoticias');
        
     }
-)->name('alteranoticia');
+)->name('alteranoticia')->middleware('auth');
 
 Route::get(
     '/deleta-noticia/{noticia}',
@@ -160,4 +164,4 @@ Route::get(
         return redirect()->route('gerencianoticia');
         
     }
-)->name('deletanoticia');
+)->name('deletanoticia')->middleware('auth');
